@@ -24,9 +24,10 @@ socate.on('connect', () => {
 
   socate.emit('join', params, err => {
     if (err) {
-
+      alert(err)
+      window.location.href = '/'
     } else {
-
+      console.log('no errors')
     }
   })
 })
@@ -48,10 +49,21 @@ socate.on('newMsg', msg => {
 
   $('#messages').append(html)
   scrolltoBottom()
+
 })
 
 socate.on('disconnect', () => {
   console.log('Disconnected from server')
+})
+
+socate.on('updateUsersList', (users) => {
+  var ol = $('<ol></ol>')
+
+  users.forEach(user => {
+    ol.append($('<li></li>').text(user))
+  });
+
+  $('#users').html(ol)
 })
 
 $('#message-form').on('submit', event => {
