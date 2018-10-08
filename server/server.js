@@ -28,7 +28,6 @@ app.use(express.static(publicPath))
 var users = new Users()
 
 io.on('connection', socate => {
-  console.log('User connected')
 
   socate.on('join', (params, callback) => {
     if (!isRealString(params.name) || !isRealString(params.room)) {
@@ -51,16 +50,23 @@ io.on('connection', socate => {
   })
 
   socate.on('createMsg', (msg, callback) => {
-    console.log('New Msg', msg)
-    io.emit('newMsg', generateMessage(msg.from, msg.text))
+    var user = users.getUser(socate.id)
+
+    if (user && isRealString(msg.text)) {
+      io.to(user.room).emit('newMsg', generateMessage(user.name, msg.text))
+    }
     callback()
   })
 
   socate.on('createLocationMsg', location => {
-    io.emit(
-      'newLocationMsg',
-      generateLocationMessage('Admin', location.lat, location.long)
-    )
+    var user = users.getUser(socate.id)
+    if (user) {
+      io.to(user.room).emit(
+        'newLocationMsg',
+        generateLocationMessage(user.name, location.lat, location.long)
+      )
+    }
+
   })
 
   socate.on('disconnect', () => {

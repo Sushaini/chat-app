@@ -27,7 +27,7 @@ socate.on('connect', () => {
       alert(err)
       window.location.href = '/'
     } else {
-      console.log('no errors')
+      // console.log('no errors')
     }
   })
 })
@@ -73,7 +73,6 @@ $('#message-form').on('submit', event => {
 
   socate.emit(
     'createMsg', {
-      from: 'user',
       text: messageTextBox.val()
     },
     () => {
@@ -107,7 +106,7 @@ locationButton.on('click', () => {
 
 socate.on('newLocationMsg', msg => {
   const formatedTime = moment(msg.createdAt).format('hh:mm a')
-  const template = $('location-message-template').html()
+  const template = $('#location-message-template').html()
   const html = Mustache.render(template, {
     url: msg.url,
     from: msg.from,
